@@ -6,9 +6,9 @@ if __name__ == '__main__':
     try:
         driver = create_chrome_driver()
         clear_all_tables()
-        parsed_cases, parsed_documents = parse_data(driver, start_page = 3)
+        parse_data(driver, start_page = 2)
         
-        save_to_db(parsed_cases, parsed_documents)
+        print('-' * 50)
         print(f'Number of cases in the db: {count_cases()}')
     finally:
         driver.quit()
