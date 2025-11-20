@@ -123,7 +123,7 @@ def save_to_db(case: dict, linked_documents: list, logging=False):
                         text_length=doc['text_length'],
                         doc_type=doc['document_type'],
                         added_to_qdrant=doc['added_to_qdrant'],
-                        embedder_model=doc['embedder_model']
+                        embedder_version=doc['embedder_version']
                     )
                 )
 

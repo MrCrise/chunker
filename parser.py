@@ -241,11 +241,7 @@ def parse_data(driver, chunker, embedder, start_page=2, last_page=1, step=-1):
             save_to_db(case, linked_documents)
             for doc in linked_documents:
                 text = doc['document_text']
-                chunks = chunker.chunk(text)
-
-                for i, chunk in enumerate(chunks):
-                    chunk["document_id"] = doc['document_id']
-                    chunk["index"] = i
+                chunks = chunker.chunk(text, doc_id=doc['document_id'])
 
                 print("Чанков:", len(chunks))
                 for i in range(len(chunks)):
@@ -256,7 +252,7 @@ def parse_data(driver, chunker, embedder, start_page=2, last_page=1, step=-1):
                 embedder.insert_to_qdrant(embeddings)
 
                 doc['added_to_qdrant'] = True
-                doc['embedder_model'] = embedder.model
+                doc['embedder_version'] = embedder.version
 
 
 def parse_one_case(driver, case_url):
@@ -441,7 +437,7 @@ def parse_one_case(driver, case_url):
                 'text_length': text_length,
                 'document_type': document_type,
                 'added_to_qdrant': False,
-                'embedder_model': None
+                'embedder_version': None
             }
 
             documents.append(document_record)

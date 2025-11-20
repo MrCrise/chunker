@@ -27,7 +27,7 @@ if __name__ == '__main__':
         driver = create_chrome_driver()
 
         clear_all_tables()
-        parse_data(driver, chunker, embedder, start_page=2)
+        parse_data(driver, chunker, embedder, start_page=3)
 
         print('-' * 50)
         print(f'Number of cases in the db: {count_cases()}')

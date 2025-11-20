@@ -4,6 +4,7 @@ from qdrant_client import QdrantClient, models
 from FlagEmbedding import BGEM3FlagModel
 from tqdm import tqdm
 from transformers import AutoTokenizer
+from uuid import uuid4
 from constants import EMBEDDER_VER
 
 
@@ -119,9 +120,7 @@ class Embedder:
 
             converted_sparse = self.convert_sparse_vector(sparse_weights)
 
-            document_id = chunk.get("document_id", "unknown_doc")
-            chunk_index = chunk.get("index", 0)
-            id = f"{document_id}_chunk_{chunk_index}"
+            id = uuid4()
 
             self.client.upsert(
                 collection_name=collection_name,
