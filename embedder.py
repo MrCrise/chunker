@@ -4,6 +4,8 @@ from qdrant_client import QdrantClient, models
 from FlagEmbedding import BGEM3FlagModel
 from tqdm import tqdm
 from transformers import AutoTokenizer
+from uuid import uuid4
+from constants import EMBEDDER_VER
 
 
 class Embedder:
@@ -13,6 +15,7 @@ class Embedder:
         self.client: QdrantClient = client
         self.model: BGEM3FlagModel = model
         self.tokenizer: AutoTokenizer = tokenizer
+        self.version: str = EMBEDDER_VER
 
     def create_qdrant_collection(self,
                                  collection_name: str = "legal_rag") -> None:
@@ -78,7 +81,7 @@ class Embedder:
 
         return chunk_embeddings
 
-    def convert_sparse_vector(self, sparse_weigths: defaultdict) -> models.SparseVector:
+    def convert_sparse_vector(self, sparse_weights: defaultdict) -> models.SparseVector:
         """
         Конвертирует sparse веса, полученные из модели BGE
         в формат, поддерживаемый Qdrant.
@@ -87,7 +90,7 @@ class Embedder:
         sparse_indices = []
         sparse_values = []
 
-        for key, value in sparse_weigths.items():
+        for key, value in sparse_weights.items():
             if float(value) > 1:
                 if isinstance(key, str):
                     if key.isdigit():
@@ -117,11 +120,13 @@ class Embedder:
 
             converted_sparse = self.convert_sparse_vector(sparse_weights)
 
+            id = uuid4()
+
             self.client.upsert(
                 collection_name=collection_name,
                 points=[
                     models.PointStruct(
-                        id=chunk.get("index"),  # TODO: Change id getting logic to get unique ids for points of different documents.
+                        id=id,  # TODO: Change id getting logic to get unique ids for points of different documents.
                         payload=chunk,
                         vector={
                             "dense": dense_vector,
