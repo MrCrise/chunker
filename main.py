@@ -18,7 +18,12 @@ if __name__ == '__main__':
         tokenizer = AutoTokenizer.from_pretrained(
             TOKENIZER_NAME, trust_remote_code=True)
 
-        client = QdrantClient(host="localhost", port=6333)
+        client = QdrantClient(
+            host="localhost",
+            port=6334,
+            prefer_grpc=True,
+            timeout=100
+        )
 
         chunker = SentenceChunker(tokenizer)
 
@@ -27,7 +32,7 @@ if __name__ == '__main__':
         driver = create_chrome_driver()
 
         clear_all_tables()
-        parse_data(driver, chunker, embedder, start_page=3)
+        parse_data(driver, chunker, embedder, start_page=2)
 
         print('-' * 50)
         print(f'Number of cases in the db: {count_cases()}')
